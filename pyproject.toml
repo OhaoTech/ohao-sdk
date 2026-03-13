@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ohao"
+version = "0.1.0"
+description = "CLI & SDK for game developers — motion capture, retargeting, and more"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "httpx>=0.24.0",
+    "click>=8.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-httpx", "ruff"]
+
+[project.scripts]
+ohao = "ohao._cli:main"
+
+[project.urls]
+Homepage = "https://mogen3d.ohao.tech"
+Repository = "https://github.com/OhaoTech/MoGen3D_wham"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ohao.mogen3d.presets" = ["*.json"]
+"ohao.mogen3d" = ["_blender_script.py"]

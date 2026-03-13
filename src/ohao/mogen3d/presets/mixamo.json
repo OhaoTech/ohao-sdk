@@ -1,0 +1,18 @@
+{
+  "name": "Mixamo",
+  "bone_map": {
+    "Hips": "Hips", "Spine": "Spine", "Spine1": "Spine1", "Spine2": "Spine2",
+    "Neck": "Neck", "Head": "Head",
+    "LeftShoulder": "LeftShoulder", "LeftArm": "LeftArm",
+    "LeftForeArm": "LeftForeArm", "LeftHand": "LeftHand",
+    "LeftHandMiddle1": "LeftHandMiddle1",
+    "RightShoulder": "RightShoulder", "RightArm": "RightArm",
+    "RightForeArm": "RightForeArm", "RightHand": "RightHand",
+    "RightHandMiddle1": "RightHandMiddle1",
+    "LeftUpLeg": "LeftUpLeg", "LeftLeg": "LeftLeg",
+    "LeftFoot": "LeftFoot", "LeftToeBase": "LeftToeBase",
+    "RightUpLeg": "RightUpLeg", "RightLeg": "RightLeg",
+    "RightFoot": "RightFoot", "RightToeBase": "RightToeBase"
+  },
+  "root_bone": "Hips"
+}
