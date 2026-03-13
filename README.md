@@ -90,6 +90,52 @@ retarget(
 )
 ```
 
+## Examples
+
+See the [`examples/`](examples/) directory for runnable scripts:
+
+| Example | Description |
+|---------|-------------|
+| [`basic_retarget.py`](examples/basic_retarget.py) | Minimal one-liner retarget |
+| [`batch_retarget.py`](examples/batch_retarget.py) | Apply one BVH to a folder of characters |
+| [`retarget_with_preset.py`](examples/retarget_with_preset.py) | Force a specific rig preset |
+| [`inspect_in_blender.py`](examples/inspect_in_blender.py) | Open result in Blender GUI |
+| [`custom_blender_path.py`](examples/custom_blender_path.py) | Use a specific Blender install |
+
+## Adding a Custom Rig Preset
+
+If your character uses a non-standard skeleton, create a JSON preset:
+
+```json
+{
+  "name": "My Rig",
+  "bone_map": {
+    "Hips": "my_pelvis",
+    "Spine": "my_spine_01",
+    "Head": "my_head",
+    "LeftArm": "my_upper_arm_L",
+    "LeftForeArm": "my_lower_arm_L",
+    "RightArm": "my_upper_arm_R",
+    "RightForeArm": "my_lower_arm_R",
+    "LeftUpLeg": "my_thigh_L",
+    "LeftLeg": "my_shin_L",
+    "RightUpLeg": "my_thigh_R",
+    "RightLeg": "my_shin_R"
+  },
+  "root_bone": "Hips"
+}
+```
+
+Keys on the left are the BVH bone names. Values on the right are your character's bone names. Then pass it:
+
+```python
+retarget("dance.bvh", "MyRig.fbx", preset="my_rig.json")
+```
+
+```bash
+ohao mogen3d retarget dance.bvh MyRig.fbx --preset my_rig.json
+```
+
 ## License
 
 MIT
