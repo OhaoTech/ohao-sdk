@@ -91,14 +91,14 @@ def retarget(
         BlenderNotFoundError: If Blender cannot be found.
         RetargetError: If Blender exits with an error.
     """
-    blender = _find_blender(blender_path)
-
     bvh = Path(bvh_path)
     char = Path(character_path)
     if not bvh.exists():
         raise FileNotFoundError(f"BVH not found: {bvh_path}")
     if not char.exists():
         raise FileNotFoundError(f"Character not found: {character_path}")
+
+    blender = _find_blender(blender_path)
 
     if output_path is None:
         output_path = str(Path.cwd() / f"{bvh.stem}_{char.stem}.blend")
