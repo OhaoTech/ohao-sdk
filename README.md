@@ -18,7 +18,7 @@
 
 ---
 
-**ohao** retargets BVH / FBX animations onto your characters them onto your characters — Mixamo, UE5 Mannequin, or any humanoid rig.
+**ohao** retargets BVH / FBX animations onto your characters — Mixamo, UE5 Mannequin, or any humanoid rig.
 
 ## Install
 
@@ -35,16 +35,12 @@ pip install ohao
 ```python
 from ohao.mogen3d import retarget
 
-
-# 2. Retarget onto your character
-retarget(str(bvh_path), "MyCharacter.fbx")
+retarget("dance.bvh", "MyCharacter.fbx")
 ```
 
 ### CLI
 
 ```bash
-
-# Retarget onto a character
 ohao mogen3d retarget dance.bvh MyCharacter.fbx --preset mixamo
 ```
 
@@ -75,30 +71,10 @@ retarget("dance.bvh", "MyChar.fbx", background=False)
 
 | Input | Output |
 |-------|--------|
-| Character: `.fbx`, `.glb`, `.gltf` | Retargeted `.blend` file |
+| Animation: `.bvh`, `.fbx` | Retargeted `.blend` file |
+| Character: `.fbx`, `.glb`, `.gltf` | |
 
 ## API Reference
-
-### `MoGen3DClient`
-
-```python
-```
-
-| Method | Description |
-|--------|-------------|
-
-### `Job`
-
-```python
-job = job.wait(timeout=600)       # Block until done
-path = job.download(format="bvh") # Download result
-```
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `job.id` | `str` | Job ID |
-| `job.status` | `str` | `pending`, `processing`, `completed`, `failed` |
-| `job.error` | `str?` | Error message (if failed) |
 
 ### `retarget()`
 
@@ -113,14 +89,6 @@ retarget(
     background=True,     # Run headless (default: True)
 )
 ```
-
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-
-## Get an API Key
-
 
 ## License
 
