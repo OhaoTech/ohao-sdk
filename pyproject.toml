@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ohao"
 version = "0.1.0"
-description = "CLI & SDK for game developers — motion capture, retargeting, and more"
+description = "Retarget animations onto any humanoid character — CLI & Python SDK for game developers"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
