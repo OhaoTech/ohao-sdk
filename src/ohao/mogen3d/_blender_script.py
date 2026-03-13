@@ -7,7 +7,6 @@ Invoked by ohao.mogen3d.retarget.retarget() — not meant to be run directly.
 """
 import bpy
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -22,13 +21,17 @@ preset_file = None
 i = 0
 while i < len(argv):
     if argv[i] == "--bvh" and i + 1 < len(argv):
-        bvh_file = argv[i + 1]; i += 2
+        bvh_file = argv[i + 1]
+        i += 2
     elif argv[i] == "--char" and i + 1 < len(argv):
-        char_file = argv[i + 1]; i += 2
+        char_file = argv[i + 1]
+        i += 2
     elif argv[i] == "--output" and i + 1 < len(argv):
-        output_file = argv[i + 1]; i += 2
+        output_file = argv[i + 1]
+        i += 2
     elif argv[i] == "--preset-file" and i + 1 < len(argv):
-        preset_file = argv[i + 1]; i += 2
+        preset_file = argv[i + 1]
+        i += 2
     else:
         i += 1
 
