@@ -151,11 +151,18 @@ class MoGen3DClient:
 
     def __init__(
         self,
-        api_key: str,
+        api_key: Optional[str] = None,
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = 30.0,
     ):
-        if not api_key or not api_key.startswith("mg_"):
+        if api_key is None:
+            from ohao._credentials import load_api_key
+            api_key = load_api_key()
+        if not api_key:
+            raise ValueError(
+                "No API key found. Run `ohao login` or pass api_key= explicitly."
+            )
+        if not api_key.startswith("mg_"):
             raise ValueError("API key must start with 'mg_'")
         self._http = httpx.Client(
             base_url=base_url,

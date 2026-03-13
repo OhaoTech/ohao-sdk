@@ -8,7 +8,17 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(main, ["--version"])
     assert result.exit_code == 0
-    assert "0.2.0" in result.output
+    assert "0.3.0" in result.output
+
+
+def test_top_level_help():
+    runner = CliRunner()
+    result = runner.invoke(main, ["--help"])
+    assert result.exit_code == 0
+    assert "login" in result.output
+    assert "logout" in result.output
+    assert "whoami" in result.output
+    assert "mogen3d" in result.output
 
 
 def test_mogen3d_help():
@@ -33,3 +43,9 @@ def test_retarget_missing_files():
     runner = CliRunner()
     result = runner.invoke(main, ["mogen3d", "retarget", "nonexistent.bvh", "nonexistent.fbx"])
     assert result.exit_code != 0
+
+
+def test_logout_when_not_logged_in():
+    runner = CliRunner()
+    result = runner.invoke(main, ["logout"])
+    assert "Not logged in" in result.output

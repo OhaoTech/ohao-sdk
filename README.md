@@ -31,14 +31,15 @@ pip install ohao
 ## Quick Start
 
 ```bash
-# Set your API key once
-export OHAO_API_KEY=mg_your_key_here
+# Log in once — opens browser, you paste your API key
+ohao login
 ```
 
 ```python
 from ohao.mogen3d import MoGen3DClient, retarget
 
-client = MoGen3DClient(api_key="mg_your_key")
+# No api_key needed — auto-reads from ~/.ohao/credentials.json
+client = MoGen3DClient()
 
 # Check sparks balance (each job costs 1 spark)
 sparks = client.sparks()
@@ -59,19 +60,21 @@ retarget(str(bvh), "MyCharacter.fbx")
 ### CLI
 
 ```bash
-# Check balance & claim daily sparks
-ohao mogen3d sparks
-ohao mogen3d claim
+# Auth
+ohao login                   # save API key locally (one-time)
+ohao whoami                  # check account info
+ohao logout                  # remove saved credentials
+
+# Sparks
+ohao mogen3d sparks          # check balance
+ohao mogen3d claim           # claim daily free sparks
+ohao mogen3d bundles         # list purchasable bundles
 
 # Process a video (costs 1 spark)
 ohao mogen3d process dance.mp4 --format bvh -o dance.bvh
 
 # Retarget onto a character (free, runs locally)
 ohao mogen3d retarget dance.bvh MyCharacter.fbx --preset mixamo
-
-# Account info
-ohao mogen3d status
-ohao mogen3d bundles
 ```
 
 ## Sparks
@@ -215,18 +218,27 @@ retarget("dance.bvh", "MyRig.fbx", preset="my_rig.json")
 ohao mogen3d retarget dance.bvh MyRig.fbx --preset my_rig.json
 ```
 
-## Environment Variables
+## Authentication
 
-| Variable | Description |
-|----------|-------------|
-| `OHAO_API_KEY` | API key (alternative to `api_key=` param) |
-| `OHAO_BASE_URL` | API base URL override |
+The recommended way to authenticate:
 
-## Get an API Key
+```bash
+ohao login
+```
 
-1. Go to [mogen3d.ohao.tech](https://mogen3d.ohao.tech)
-2. Sign in and navigate to **Settings > API Keys**
-3. Create a new key (starts with `mg_`)
+This opens your browser, you create/copy an API key, paste it in the terminal, and it's saved to `~/.ohao/credentials.json`. All subsequent commands and `MoGen3DClient()` calls use it automatically — **no API key in your code.**
+
+Alternatively, you can set an environment variable or pass it explicitly:
+
+```bash
+export OHAO_API_KEY=mg_your_key     # env var
+```
+
+```python
+client = MoGen3DClient(api_key="mg_...")  # explicit (not recommended)
+```
+
+**Priority order:** explicit `api_key=` > `OHAO_API_KEY` env var > `~/.ohao/credentials.json`
 
 ## License
 
