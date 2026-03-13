@@ -1,11 +1,19 @@
 """Tests for ohao.mogen3d.retarget."""
 
+import importlib
+import sys
 import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 
 from ohao._exceptions import BlenderNotFoundError, RetargetError
-from ohao.mogen3d.retarget import _find_blender, retarget, KNOWN_PRESETS
+
+# Import the module directly (not the function) to avoid __init__.py shadowing
+retarget_mod = importlib.import_module("ohao.mogen3d.retarget")
+
+_find_blender = retarget_mod._find_blender
+retarget_fn = retarget_mod.retarget
+KNOWN_PRESETS = retarget_mod.KNOWN_PRESETS
 
 
 def test_find_blender_explicit_path(tmp_path):
@@ -35,14 +43,14 @@ def test_retarget_missing_bvh(tmp_path):
     char = tmp_path / "char.fbx"
     char.write_text("fake")
     with pytest.raises(FileNotFoundError, match="BVH"):
-        retarget("/nonexistent/anim.bvh", str(char))
+        retarget_fn("/nonexistent/anim.bvh", str(char))
 
 
 def test_retarget_missing_char(tmp_path):
     bvh = tmp_path / "anim.bvh"
     bvh.write_text("fake")
     with pytest.raises(FileNotFoundError, match="Character"):
-        retarget(str(bvh), "/nonexistent/char.fbx")
+        retarget_fn(str(bvh), "/nonexistent/char.fbx")
 
 
 def test_retarget_unknown_preset(tmp_path):
@@ -50,9 +58,9 @@ def test_retarget_unknown_preset(tmp_path):
     bvh.write_text("fake")
     char = tmp_path / "char.fbx"
     char.write_text("fake")
-    with patch("ohao.mogen3d.retarget._find_blender", return_value="/usr/bin/blender"):
+    with patch.object(retarget_mod, "_find_blender", return_value="/usr/bin/blender"):
         with pytest.raises(RetargetError, match="Unknown preset"):
-            retarget(str(bvh), str(char), preset="nonexistent_preset")
+            retarget_fn(str(bvh), str(char), preset="nonexistent_preset")
 
 
 def test_retarget_success(tmp_path):
@@ -65,13 +73,11 @@ def test_retarget_success(tmp_path):
     mock_result = MagicMock()
     mock_result.returncode = 0
 
-    with patch("ohao.mogen3d.retarget._find_blender", return_value="/usr/bin/blender"):
+    with patch.object(retarget_mod, "_find_blender", return_value="/usr/bin/blender"):
         with patch("subprocess.run", return_value=mock_result) as mock_run:
-            # Create the output file to simulate Blender creating it
             out.write_text("blend")
-            path = retarget(str(bvh), str(char), output_path=str(out))
+            path = retarget_fn(str(bvh), str(char), output_path=str(out))
             assert path == out
-            # Verify Blender was called with correct args
             cmd = mock_run.call_args[0][0]
             assert "/usr/bin/blender" in cmd
             assert "--background" in cmd
@@ -90,10 +96,10 @@ def test_retarget_blender_error(tmp_path):
     mock_result.stderr = "Blender crashed"
     mock_result.stdout = ""
 
-    with patch("ohao.mogen3d.retarget._find_blender", return_value="/usr/bin/blender"):
+    with patch.object(retarget_mod, "_find_blender", return_value="/usr/bin/blender"):
         with patch("subprocess.run", return_value=mock_result):
             with pytest.raises(RetargetError, match="code 1"):
-                retarget(str(bvh), str(char))
+                retarget_fn(str(bvh), str(char))
 
 
 def test_known_presets_exist():
