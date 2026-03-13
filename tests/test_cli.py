@@ -17,12 +17,15 @@ def test_mogen3d_help():
     assert result.exit_code == 0
     assert "process" in result.output
     assert "retarget" in result.output
+    assert "sparks" in result.output
+    assert "claim" in result.output
+    assert "status" in result.output
+    assert "bundles" in result.output
 
 
 def test_process_missing_api_key():
     runner = CliRunner()
     result = runner.invoke(main, ["mogen3d", "process", "nonexistent.mp4"], env={"OHAO_API_KEY": ""})
-    # Should fail because file doesn't exist or key missing
     assert result.exit_code != 0
 
 

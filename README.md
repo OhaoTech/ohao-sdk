@@ -5,7 +5,7 @@
 <h1 align="center">ohao</h1>
 
 <p align="center">
-  <strong>Retarget animations onto any humanoid character</strong><br>
+  <strong>Process animations and retarget them onto any humanoid character</strong><br>
   CLI & Python SDK for game developers
 </p>
 
@@ -18,7 +18,7 @@
 
 ---
 
-**ohao** retargets BVH / FBX animations onto your characters — Mixamo, UE5 Mannequin, or any humanoid rig.
+**ohao** is the SDK for [MoGen3D](https://mogen3d.ohao.tech) — process videos into animation files (BVH / FBX) and retarget them onto your characters.
 
 ## Install
 
@@ -30,19 +30,78 @@ pip install ohao
 
 ## Quick Start
 
-### Python
+```bash
+# Set your API key once
+export OHAO_API_KEY=mg_your_key_here
+```
 
 ```python
-from ohao.mogen3d import retarget
+from ohao.mogen3d import MoGen3DClient, retarget
 
-retarget("dance.bvh", "MyCharacter.fbx")
+client = MoGen3DClient(api_key="mg_your_key")
+
+# Check sparks balance (each job costs 1 spark)
+sparks = client.sparks()
+print(f"{sparks.balance} sparks available")
+
+# Claim daily free sparks
+if sparks.can_claim:
+    client.claim_sparks()
+
+# Process a video → download BVH
+job = client.process("dance.mp4", wait=True)
+bvh = job.download(format="bvh")
+
+# Retarget onto your character (runs locally via Blender)
+retarget(str(bvh), "MyCharacter.fbx")
 ```
 
 ### CLI
 
 ```bash
+# Check balance & claim daily sparks
+ohao mogen3d sparks
+ohao mogen3d claim
+
+# Process a video (costs 1 spark)
+ohao mogen3d process dance.mp4 --format bvh -o dance.bvh
+
+# Retarget onto a character (free, runs locally)
 ohao mogen3d retarget dance.bvh MyCharacter.fbx --preset mixamo
+
+# Account info
+ohao mogen3d status
+ohao mogen3d bundles
 ```
+
+## Sparks
+
+Sparks are the credits that power processing jobs. **1 spark = 1 job.** Retargeting is free (runs locally).
+
+| | Free | Pro |
+|---|---|---|
+| Daily sparks | 1/day | 15/day (accumulates up to 100) |
+| Exports | BVH | BVH + FBX |
+| Daily job limit | 5 | 50 |
+
+Need more? Purchase spark bundles:
+
+| Bundle | Price |
+|--------|-------|
+| 30 sparks | $3.99 |
+| 100 sparks | $9.99 |
+| 1,000 sparks | $59.99 |
+
+```python
+# Check available bundles
+for bundle in client.bundles():
+    print(f"{bundle.label}: {bundle.price}")
+
+# Purchase (opens Stripe checkout)
+url = client.purchase_bundle("sparks_100")
+```
+
+Sparks are refunded automatically if a job fails.
 
 ## Retargeting
 
@@ -71,10 +130,30 @@ retarget("dance.bvh", "MyChar.fbx", background=False)
 
 | Input | Output |
 |-------|--------|
-| Animation: `.bvh`, `.fbx` | Retargeted `.blend` file |
+| Video: `.mp4`, `.mov`, `.webm` | `.bvh`, `.fbx` (via cloud processing) |
+| Animation: `.bvh`, `.fbx` | Retargeted `.blend` file (local) |
 | Character: `.fbx`, `.glb`, `.gltf` | |
 
 ## API Reference
+
+### `MoGen3DClient`
+
+```python
+client = MoGen3DClient(api_key="mg_...", base_url="https://...")
+```
+
+| Method | Description |
+|--------|-------------|
+| `client.sparks()` | Get sparks balance and claim status |
+| `client.claim_sparks()` | Claim daily sparks |
+| `client.bundles()` | List purchasable spark bundles |
+| `client.purchase_bundle(id)` | Start Stripe checkout for a bundle |
+| `client.status()` | Account tier, usage, subscription info |
+| `client.process(path, *, wait=False)` | Upload video, start processing (1 spark) |
+| `client.list_jobs()` | List all jobs |
+| `client.get_job(id)` | Get job by ID |
+| `client.download(id, format="bvh")` | Download result file |
+| `client.delete_job(id)` | Delete a job |
 
 ### `retarget()`
 
@@ -135,6 +214,19 @@ retarget("dance.bvh", "MyRig.fbx", preset="my_rig.json")
 ```bash
 ohao mogen3d retarget dance.bvh MyRig.fbx --preset my_rig.json
 ```
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `OHAO_API_KEY` | API key (alternative to `api_key=` param) |
+| `OHAO_BASE_URL` | API base URL override |
+
+## Get an API Key
+
+1. Go to [mogen3d.ohao.tech](https://mogen3d.ohao.tech)
+2. Sign in and navigate to **Settings > API Keys**
+3. Create a new key (starts with `mg_`)
 
 ## License
 
