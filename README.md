@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="https://raw.githubusercontent.com/OhaoTech/ohao-sdk/master/logo.png" alt="ohao" width="80" />
 </p>
 
 <h1 align="center">ohao</h1>
